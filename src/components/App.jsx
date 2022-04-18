@@ -1,42 +1,25 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
+import { ToastContainer, } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Searchbar from "./Searchbar";
+import ImageGallery from './ImageGallery';
 
 class App extends Component {
   state = {
-    imagesData: [],
-    loader: false,
-    
+    imageName: '',  
   }
 
-  componentDidMount() {
-    // запись тестового списка в локал сторедж
-    // localStorage.setItem('contacts', JSON.stringify(defaultData));
-
-    const savedContacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(savedContacts);
-
-    if (parsedContacts) {
-      return this.setState({ contacts: parsedContacts });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      console.log('updated!!!!!!');
-
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
+  submitSerchInput = imageName => {
+    this.setState({ imageName });
   }
 
   render() {
+    
     return (
     <div>
-      <Searchbar />
-        <ul class="gallery">
-          <li class="gallery-item">
-            <img src="" alt="" />
-          </li>
-        </ul>
+        <Searchbar onSubmit={this.submitSerchInput} />
+        <ImageGallery imageName={this.state.imageName}/>
+        <ToastContainer autoClose={2000}/>
     </div>
   );
   }

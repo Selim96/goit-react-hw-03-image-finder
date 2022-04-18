@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import queryImagesApi from '../Api/Api';
-
+import { toast } from 'react-toastify';
 
 class Searchbar extends Component {
     state = {
@@ -8,14 +7,19 @@ class Searchbar extends Component {
     }
 
     handlChange = (e) => {
-    this.setState({ toSearch: e.currentTarget.value })
-    console.log(this.state)
+        this.setState({ toSearch: e.currentTarget.value.toLowerCase(), });
     }
-    
-    handlSubmit = () => {
-        const searchQuery = this.state.toSearch;
-        queryImagesApi(searchQuery);
 
+    handlSubmit = (e) => {
+        e.preventDefault();
+        const searchQuery = this.state.toSearch;
+        
+        if (searchQuery.trim() === '') {
+            toast.error('please, enter name!!!!');
+            return;
+        }
+        this.props.onSubmit(searchQuery);
+        this.setState({ toSearch: '' });
     }
 
     render() {
