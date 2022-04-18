@@ -3,10 +3,11 @@ import { ToastContainer, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Searchbar from "./Searchbar";
 import ImageGallery from './ImageGallery';
+import '../index.css';
 
 class App extends Component {
   state = {
-    imageName: '',  
+    imageName: '', 
   }
 
   submitSerchInput = imageName => {
@@ -14,11 +15,10 @@ class App extends Component {
   }
 
   render() {
-    
     return (
     <div>
         <Searchbar onSubmit={this.submitSerchInput} />
-        <ImageGallery imageName={this.state.imageName}/>
+        <ImageGallery imageName={this.state.imageName} />
         <ToastContainer autoClose={2000}/>
     </div>
   );

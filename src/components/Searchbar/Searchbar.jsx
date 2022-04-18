@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import s from './Searchbar.module.css';
 import { toast } from 'react-toastify';
 
 class Searchbar extends Component {
@@ -24,14 +25,13 @@ class Searchbar extends Component {
 
     render() {
         return (
-            <header class="searchbar">
-                <form class="form" onSubmit={this.handlSubmit}>
-                    <button type="submit" class="button">
-                        <span class="button-label">Search</span>
+            <header className={s.Searchbar}>
+                <form className={s.SearchForm} onSubmit={this.handlSubmit}>
+                    <button type="submit" className={s.SearchFormButton}>
+                        <span className={s.SearchFormButtonLabel}>Search</span>
                     </button>
-
                     <input
-                        class="input"
+                        className={s.SearchFormInput}
                         type="text"
                         name="input"
                         autoComplete="off"
