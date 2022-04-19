@@ -6,25 +6,30 @@ import ImageGalleryItem from '../ImageGalleryItem';
 import Modal from '../Modal';
 import ErrorPic from "components/Error";
 import Loader from "components/Loader/Loader";
+import Button from "components/Button/Button";
 
 class ImageGallery extends Component {
     state = {
         images: [],
         totalHits: '',
+        per_page: 12,
         status: 'idele',
         error: '',
         showModal: false,
         imageURL: '',
     }
+    apiKey = '25806366-bb151d617166a7ad647d002f5';
+    url = 'https://pixabay.com/api/?';
     
     componentDidUpdate(prevProps, prevState) {
-        const apiKey = '25806366-bb151d617166a7ad647d002f5';
+        
         const prevName = prevProps.imageName;
         const currentName = this.props.imageName;
+
         if (prevName !== currentName) {
             this.setState({ status: 'pending', });
-            setTimeout(() => {
-                fetch(`https://pixabay.com/api/?q=${currentName}&page=1&key=${apiKey}&image_type=photo&orientation=horizontal&per_page=12`).then(res => {
+            
+                fetch(`${this.url}q=${currentName}&page=1&key=${this.apiKey}&image_type=photo&orientation=horizontal&per_page=12`).then(res => {
                 if (res.ok) {
                     return res.json();
                 }
@@ -37,9 +42,7 @@ class ImageGallery extends Component {
                 }).catch(error => {
                     this.errorFunc(error);
                     this.setState({ error, status: 'rejected', })
-                });
-            }, 10000);
-            
+                });            
         }
     }
 
@@ -59,10 +62,10 @@ class ImageGallery extends Component {
     }
 // toast.error(error)
     render() {
-        const {images, status, error, showModal, imageURL} = this.state;
+        const {images, status, per_page, showModal, imageURL} = this.state;
 
         if (status === 'idele') {
-            return <div></div>
+            return <div><p></p></div>
         };
 
         if (status === 'pending') {
@@ -82,6 +85,7 @@ class ImageGallery extends Component {
                     );
                 })}
                 </ul>
+                {images.length === per_page && <Button onClick={this}/>}
                 {showModal && <Modal onClose={this.modalShowClose}>
                     <img src={imageURL} alt="" className=""/>
                 </Modal>}

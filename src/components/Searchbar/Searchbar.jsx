@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import s from './Searchbar.module.css';
 import { toast } from 'react-toastify';
+// import { DiAtom } from "@react-icons/di";
+import { FiSearch } from "@react-icons/all-files/fi/FiSearch";
 
 class Searchbar extends Component {
     state = {
@@ -28,6 +30,7 @@ class Searchbar extends Component {
             <header className={s.Searchbar}>
                 <form className={s.SearchForm} onSubmit={this.handlSubmit}>
                     <button type="submit" className={s.SearchFormButton}>
+                        <FiSearch size={20}/>
                         <span className={s.SearchFormButtonLabel}>Search</span>
                     </button>
                     <input
