@@ -32,10 +32,14 @@ class ImageGallery extends Component {
         }
     }
 
-    modalShow = (imageURL) => {
+    modalShowClose = () => {
         this.setState(({ showModal }) => ({
-            showModal: !showModal, imageURL: imageURL,
-        }))
+            showModal: !showModal,
+        }));
+    }
+
+    extractUrl = (imageURL) => {
+        this.setState({ imageURL });
     }
 
     errorFunc = (error) => {
@@ -63,11 +67,11 @@ class ImageGallery extends Component {
                 <ul className={s.ImageGallery}>
                 {images.map(({ id, webformatURL, tags, largeImageURL,}) => {
                     return (
-                        <ImageGalleryItem key={id} webImage={webformatURL} largeImage={largeImageURL} tags={tags} onClick={this.modalShow} />
+                        <ImageGalleryItem key={id} webImage={webformatURL} largeImage={largeImageURL} tags={tags} onClick={this.modalShowClose} extract={this.extractUrl}/>
                     );
                 })}
                 </ul>
-                {showModal && <Modal>
+                {showModal && <Modal onClose={this.modalShowClose}>
                     <img src={imageURL} alt="" className=""/>
                 </Modal>}
             </>
