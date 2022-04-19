@@ -4,7 +4,8 @@ import s from './ImageGallery.module.css';
 import { toast } from 'react-toastify';
 import ImageGalleryItem from '../ImageGalleryItem';
 import Modal from '../Modal';
-
+import ErrorPic from "components/Error";
+import Loader from "components/Loader/Loader";
 
 class ImageGallery extends Component {
     state = {
@@ -22,13 +23,23 @@ class ImageGallery extends Component {
         const currentName = this.props.imageName;
         if (prevName !== currentName) {
             this.setState({ status: 'pending', });
-            
-            fetch(`https://pixabay.com/api/?q=${currentName}&page=1&key=${apiKey}&image_type=photo&orientation=horizontal&per_page=12`).then(res => {
+            setTimeout(() => {
+                fetch(`https://pixabay.com/api/?q=${currentName}&page=1&key=${apiKey}&image_type=photo&orientation=horizontal&per_page=12`).then(res => {
                 if (res.ok) {
                     return res.json();
                 }
-                return Promise.reject(new Error(`картинок по запросу ${currentName} нет!`));
-            }).then(respObj => this.setState({status: 'resolved', images: respObj.hits, totalHits: respObj.totalHits })).catch(error => this.setState({ error, status: 'rejected', }));
+                return Promise.reject(new Error(`Something go wrong!`));
+                }).then(respObj => {
+                    if (respObj.hits.length === 0) {
+                        return Promise.reject(new Error(`We can't find ${currentName}!`));
+                    }
+                    this.setState({ status: 'resolved', images: respObj.hits, totalHits: respObj.totalHits })
+                }).catch(error => {
+                    this.errorFunc(error);
+                    this.setState({ error, status: 'rejected', })
+                });
+            }, 10000);
+            
         }
     }
 
@@ -55,11 +66,11 @@ class ImageGallery extends Component {
         };
 
         if (status === 'pending') {
-            return <p>Загружаем картинки...</p>;
+            return <Loader/>;
         };
 
         if (status === 'rejected') {
-            return <h2>{error.message}</h2>;
+            return <ErrorPic />;
         };
 
         if (status === 'resolved') {

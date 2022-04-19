@@ -7,20 +7,28 @@ const modalRoot = document.querySelector('#modalRoot');
 class Modal extends Component {
 
     componentDidMount() {
-        window.addEventListener('keydown', e => {
-            if (e.code === 'Escape') {
-                this.props.onClose();
-            }
-        })
+        window.addEventListener('keydown', this.closeOnEscape);
     }
 
     componentWillUnmount() {
+        window.removeEventListener('keydown', this.closeOnEscape);
+    }
 
+    closeOnEscape = e => {
+        if (e.code === 'Escape') {
+            this.props.onClose();
+        }
+    };
+
+    backdropClick = (e) => {
+        if (e.target === e.currentTarget) {
+            this.props.onClose();
+        }
     }
 
     render() {
         return createPortal(
-            <div className={s.Overlay}>
+            <div className={s.Overlay} onClick={this.backdropClick}>
                 <div className={s.Modal}>
                     {this.props.children}
                 </div>
