@@ -1,5 +1,3 @@
-
-
 class ImagesApi {
     #url = 'https://pixabay.com/api/?';
     #apiKey = '25806366-bb151d617166a7ad647d002f5';
@@ -46,7 +44,6 @@ class ImagesApi {
     set perPage(num) {
         this.#per_page = num;
     }
-    
 }
 
 export default ImagesApi;

@@ -19,10 +19,10 @@ class ImageGallery extends Component {
         error: '',
         showModal: false,
         imageURL: '',
+        onMore: false,
     }
     
     componentDidUpdate(prevProps, prevState) {
-        console.log('Updated!!!')
         const prevName = prevProps.imageName;
         const currentName = this.props.imageName;
 
@@ -31,7 +31,7 @@ class ImageGallery extends Component {
 
             api.query = currentName;
             api.page = 1;
-
+            api.per_page = this.state.per_page;
             api.fetchImages().then(respObj => {
                     if (respObj.hits.length === 0) {
                         return Promise.reject(new Error(`We can't find ${currentName}!`));
@@ -45,10 +45,12 @@ class ImageGallery extends Component {
     }
 
     onLoadMore = () => {
+        this.setState({ onMore: true });
         api.pageIncrise();
         api.fetchImages().then(respObj => {
             this.setState(prev => ({
                 images: [...prev.images, ...respObj.hits],
+                onMore: false,
             }));
         });
     }
@@ -69,10 +71,10 @@ class ImageGallery extends Component {
     }
 // toast.error(error)
     render() {
-        const {images, status, per_page, showModal, imageURL} = this.state;
+        const {images, status, showModal, imageURL, totalHits, onMore} = this.state;
 
         if (status === 'idele') {
-            return <div><p></p></div>
+            return <div></div>
         };
 
         if (status === 'pending') {
@@ -86,18 +88,19 @@ class ImageGallery extends Component {
         if (status === 'resolved') {
             return <>
                 <ul className={s.ImageGallery}>
-                {images.map(({ id, webformatURL, tags, largeImageURL,}) => {
-                    return (
-                        <ImageGalleryItem key={id} webImage={webformatURL} largeImage={largeImageURL} tags={tags} onClick={this.modalShowClose} extract={this.extractUrl}/>
-                    );
-                })}
+                    {images.map(({ id, webformatURL, tags, largeImageURL, }) => {
+                        return (
+                            <ImageGalleryItem key={id} webImage={webformatURL} largeImage={largeImageURL} tags={tags} onClick={this.modalShowClose} extract={this.extractUrl} />
+                        );
+                    })}
                 </ul>
-                {images.length === per_page && <Button onClick={this.onLoadMore}/>}
+                {onMore && <Loader />}
+                {totalHits > images.length && !onMore && <Button onClick={this.onLoadMore} />}
                 {showModal && <Modal onClose={this.modalShowClose}>
-                    <img src={imageURL} alt="" className=""/>
+                    <img src={imageURL} alt="" className="" />
                 </Modal>}
             </>
-        };
+        }
     }
 }
 
