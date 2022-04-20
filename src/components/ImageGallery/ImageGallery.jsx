@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import queryImagesApi from '../Api/Api';
+import ImagesApi from '../Api/Api';
 import s from './ImageGallery.module.css';
 import { toast } from 'react-toastify';
 import ImageGalleryItem from '../ImageGalleryItem';
@@ -7,6 +7,8 @@ import Modal from '../Modal';
 import ErrorPic from "components/Error";
 import Loader from "components/Loader/Loader";
 import Button from "components/Button/Button";
+
+const api = new ImagesApi();
 
 class ImageGallery extends Component {
     state = {
@@ -18,32 +20,37 @@ class ImageGallery extends Component {
         showModal: false,
         imageURL: '',
     }
-    apiKey = '25806366-bb151d617166a7ad647d002f5';
-    url = 'https://pixabay.com/api/?';
     
     componentDidUpdate(prevProps, prevState) {
-        
+        console.log('Updated!!!')
         const prevName = prevProps.imageName;
         const currentName = this.props.imageName;
 
         if (prevName !== currentName) {
             this.setState({ status: 'pending', });
-            
-                fetch(`${this.url}q=${currentName}&page=1&key=${this.apiKey}&image_type=photo&orientation=horizontal&per_page=12`).then(res => {
-                if (res.ok) {
-                    return res.json();
-                }
-                return Promise.reject(new Error(`Something go wrong!`));
-                }).then(respObj => {
+
+            api.query = currentName;
+            api.page = 1;
+
+            api.fetchImages().then(respObj => {
                     if (respObj.hits.length === 0) {
                         return Promise.reject(new Error(`We can't find ${currentName}!`));
                     }
-                    this.setState({ status: 'resolved', images: respObj.hits, totalHits: respObj.totalHits })
+                this.setState({ status: 'resolved', images: respObj.hits, totalHits: respObj.totalHits });
                 }).catch(error => {
                     this.errorFunc(error);
                     this.setState({ error, status: 'rejected', })
-                });            
+                });
         }
+    }
+
+    onLoadMore = () => {
+        api.pageIncrise();
+        api.fetchImages().then(respObj => {
+            this.setState(prev => ({
+                images: [...prev.images, ...respObj.hits],
+            }));
+        });
     }
 
     modalShowClose = () => {
@@ -85,7 +92,7 @@ class ImageGallery extends Component {
                     );
                 })}
                 </ul>
-                {images.length === per_page && <Button onClick={this}/>}
+                {images.length === per_page && <Button onClick={this.onLoadMore}/>}
                 {showModal && <Modal onClose={this.modalShowClose}>
                     <img src={imageURL} alt="" className=""/>
                 </Modal>}
