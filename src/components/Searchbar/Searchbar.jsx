@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import s from './Searchbar.module.css';
 import { toast } from 'react-toastify';
-// import { DiAtom } from "@react-icons/di";
+import PropTypes from "prop-types";
 import { FiSearch } from "@react-icons/all-files/fi/FiSearch";
 
 class Searchbar extends Component {
     state = {
         toSearch: '',
+    }
+
+    static propTypes = {
+        onSubmit: PropTypes.func,
     }
 
     handlChange = (e) => {

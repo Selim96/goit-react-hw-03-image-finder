@@ -7,6 +7,7 @@ import Modal from '../Modal';
 import ErrorPic from "components/Error";
 import Loader from "components/Loader/Loader";
 import Button from "components/Button/Button";
+import PropTypes from "prop-types";
 
 const api = new ImagesApi();
 
@@ -22,6 +23,10 @@ class ImageGallery extends Component {
         onMore: false,
     }
     
+    static propTypes = {
+        imageName: PropTypes.string,
+    }
+
     componentDidUpdate(prevProps, prevState) {
         const prevName = prevProps.imageName;
         const currentName = this.props.imageName;
@@ -69,7 +74,7 @@ class ImageGallery extends Component {
         toast.error(`${error.message}`);
         return;
     }
-// toast.error(error)
+
     render() {
         const {images, status, showModal, imageURL, totalHits, onMore} = this.state;
 
